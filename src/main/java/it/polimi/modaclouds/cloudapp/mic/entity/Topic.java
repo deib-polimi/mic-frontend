@@ -16,49 +16,29 @@
  */
 package it.polimi.modaclouds.cloudapp.mic.entity;
 
-
-
-
-
 import java.util.List;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Column;
-
-
-
 
 @Entity
 @Table(name = "Topic")
-
 public class Topic {
 
-	
-
 	@Id
-	
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	//@Column(name="topicName")
-	
+//	@Column(name="topicName")
 	private String topicName;
 
-	//@Embedded
+//	@Embedded
 	private List<String> topicQuestions;
-
-	
 
 	public Topic() {
 
-		
-
 	}
-
-	
 
 	public Topic(String topicName, List<String> topicQuestions) {
 
@@ -69,10 +49,6 @@ public class Topic {
 		this.topicQuestions = topicQuestions;
 
 	}
-
-	
-
-	
 
 	public String getTopicName() {
 
@@ -98,7 +74,4 @@ public class Topic {
 
 	}
 
-	
-
 }
-

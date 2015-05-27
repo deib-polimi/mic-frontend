@@ -16,37 +16,21 @@
  */
 package it.polimi.modaclouds.cloudapp.mic.servlet;
 
-
-
-
-
 import java.io.IOException;
 
-
-
 import javax.servlet.ServletException;
-
 import javax.servlet.http.HttpServlet;
-
 import javax.servlet.http.HttpServletRequest;
-
 import javax.servlet.http.HttpServletResponse;
-
-
 
 public class ComputeSimilarityServlet extends HttpServlet {
 
- 
-
 	private static final long serialVersionUID = 1L;
 
-	
-
+	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 
-			throws ServletException, IOException {
-
-		
+	throws ServletException, IOException {
 
 		System.out.println("eccomi dal frontend");
 
@@ -56,21 +40,14 @@ public class ComputeSimilarityServlet extends HttpServlet {
 
 		System.out.println("user = " + usermail + " edit = " + edit);
 
-		
-
-		new ComputeSimilarity(usermail,edit);
-
-
+		new ComputeSimilarity(usermail, edit);
 
 	}
 
-
-
+	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 
-			throws ServletException, IOException {
-
-		
+	throws ServletException, IOException {
 
 		System.out.println("eccomi dal frontend");
 
@@ -80,15 +57,8 @@ public class ComputeSimilarityServlet extends HttpServlet {
 
 		System.out.println("user = " + usermail + " edit = " + edit);
 
-		
-
-		new ComputeSimilarity(usermail,edit);
-
-
-
-
+		new ComputeSimilarity(usermail, edit);
 
 	}
 
 }
-

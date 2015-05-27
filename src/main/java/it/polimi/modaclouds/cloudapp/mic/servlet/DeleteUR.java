@@ -16,52 +16,32 @@
  */
 package it.polimi.modaclouds.cloudapp.mic.servlet;
 
-
-
-
-
 import it.polimi.modaclouds.cloudapp.mic.entity.UserRatings;
-
 import it.polimi.modaclouds.cpimlibrary.entitymng.CloudEntityManager;
-
 import it.polimi.modaclouds.cpimlibrary.entitymng.CloudEntityManagerFactory;
-
 import it.polimi.modaclouds.cpimlibrary.mffactory.MF;
 
-
-
 import java.io.IOException;
-
 import java.util.List;
 
-
-
 import javax.servlet.ServletException;
-
 import javax.servlet.http.HttpServlet;
-
 import javax.servlet.http.HttpServletRequest;
-
 import javax.servlet.http.HttpServletResponse;
 
-
-
 /**
-
- * This class is used only for testing purpose, to delete automatically the ratings saved during the test
-
+ * 
+ * This class is used only for testing purpose, to delete automatically the
+ * ratings saved during the test
  */
 
 public class DeleteUR extends HttpServlet {
 
 	private static final long serialVersionUID = 5909797442154638761L;
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#HttpServlet()
-
 	 */
 
 	public DeleteUR() {
@@ -70,71 +50,51 @@ public class DeleteUR extends HttpServlet {
 
 	}
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-
 	 *      response)
-
 	 */
 
+	@Override
 	protected void doGet(HttpServletRequest request,
 
-			HttpServletResponse response) throws ServletException, IOException {
+	HttpServletResponse response) throws ServletException, IOException {
 
 		this.doPost(request, response);
 
 	}
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-
 	 *      response)
-
 	 */
 
+	@Override
 	protected void doPost(HttpServletRequest request,
 
-			HttpServletResponse response) throws ServletException, IOException {
+	HttpServletResponse response) throws ServletException, IOException {
 
-		
-
-		MF mf=MF.getFactory();
+		MF mf = MF.getFactory();
 
 		CloudEntityManagerFactory emf = mf.getEntityManagerFactory();
 
-		
-
-		CloudEntityManager em =emf.createCloudEntityManager();
+		CloudEntityManager em = emf.createCloudEntityManager();
 
 		List<UserRatings> oldRatings = em
 
 		.createQuery(
 
-				"SELECT ur FROM UserRatings ur WHERE ur.todelete=:email")
+		"SELECT ur FROM UserRatings ur WHERE ur.todelete=:email")
 
-		.setParameter("email","true").getResultList();
+		.setParameter("email", "true").getResultList();
 
+		response.getWriter()
+				.write("CANCELLO " + oldRatings.size() + " RATINGS");
 
-
-		response.getWriter().write("CANCELLO "+oldRatings.size()+" RATINGS");
-
-		for (UserRatings old : oldRatings) {
-
-			
-
+		for (UserRatings old : oldRatings)
 			em.remove(old);
-
-			
-
-			
-
-		}
 
 		em.close();
 

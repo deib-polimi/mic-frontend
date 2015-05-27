@@ -16,73 +16,45 @@
  */
 package it.polimi.modaclouds.cloudapp.mic.servlet;
 
-
-
-
-
 import it.polimi.modaclouds.cpimlibrary.mffactory.MF;
-
-
 
 import java.io.IOException;
 
-
-
 import javax.servlet.RequestDispatcher;
-
 import javax.servlet.ServletException;
-
 import javax.servlet.http.HttpServlet;
-
 import javax.servlet.http.HttpServletRequest;
-
 import javax.servlet.http.HttpServletResponse;
-
-
 
 public class DeleteFileServlet extends HttpServlet {
 
-
-
 	private static final long serialVersionUID = 1L;
 
-
-
+	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 
-			throws ServletException, IOException {
+	throws ServletException, IOException {
 
-		MF mf=MF.getFactory();
+		MF mf = MF.getFactory();
 
-		
+		String fileName = req.getParameter("fileName");
 
-		String fileName=req.getParameter("fileName");
+		mf.getBlobManagerFactory().createCloudBlobManager()
+				.deleteBlob(fileName);
 
-        mf.getBlobManagerFactory().createCloudBlobManager().deleteBlob(fileName);
-
-        RequestDispatcher disp;
+		RequestDispatcher disp;
 
 		disp = req.getRequestDispatcher("Download.jsp");
 
 		disp.forward(req, resp);
 
-	    }
+	}
 
-	
-
-
-
+	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 
-			throws ServletException, IOException {
-
-
+	throws ServletException, IOException {
 
 	}
 
-
-
-
-
 }
-

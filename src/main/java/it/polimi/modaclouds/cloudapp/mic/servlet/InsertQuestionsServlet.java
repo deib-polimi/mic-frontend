@@ -16,10 +16,6 @@
  */
 package it.polimi.modaclouds.cloudapp.mic.servlet;
 
-
-
-
-
 import it.polimi.modaclouds.cloudapp.mic.entity.Topic;
 import it.polimi.modaclouds.cpimlibrary.mffactory.MF;
 
@@ -28,29 +24,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
 public class InsertQuestionsServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5909797442154638761L;
-	
-	
 
 	/**
-
+	 * 
 	 * @see HttpServlet#HttpServlet()
-
 	 */
 
 	public InsertQuestionsServlet() {
@@ -59,37 +45,32 @@ public class InsertQuestionsServlet extends HttpServlet {
 
 	}
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-
 	 *      response)
-
 	 */
 
+	@Override
 	protected void doGet(HttpServletRequest request,
 
-			HttpServletResponse response) throws ServletException, IOException {
+	HttpServletResponse response) throws ServletException, IOException {
 
 		this.doPost(request, response);
 
 	}
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-
 	 *      response)
-
 	 */
 
-	protected void doPost(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+	@Override
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 
-		Logger l=Logger.getLogger(this.getClass().getName());
+		Logger l = Logger.getLogger(this.getClass().getName());
 
 		l.info("Inserting questions...");
 
@@ -97,11 +78,11 @@ public class InsertQuestionsServlet extends HttpServlet {
 
 		response.setCharacterEncoding("UTF-8");
 
-		MF mf=MF.getFactory();
+		MF mf = MF.getFactory();
 
 		l.info("Manager Factory loaded.");
 
-		List<String> reading=new ArrayList<String>();
+		List<String> reading = new ArrayList<String>();
 
 		reading.add("How much do you love reading?");
 
@@ -123,13 +104,12 @@ public class InsertQuestionsServlet extends HttpServlet {
 
 		reading.add("For your opinion, how much is the weight of the media in the choice of readers?");
 
-		mf.getEntityManagerFactory().createCloudEntityManager().persist(new Topic("Reading",reading));
+		mf.getEntityManagerFactory().createCloudEntityManager()
+				.persist(new Topic("Reading", reading));
 
 		l.info("Reading questions added.");
 
-			
-
-		List<String> cinema=new ArrayList<String>();
+		List<String> cinema = new ArrayList<String>();
 
 		cinema.add("How much do you love movies?");
 
@@ -151,13 +131,12 @@ public class InsertQuestionsServlet extends HttpServlet {
 
 		cinema.add("How much is the media effect in the choice of an individual to go see a movie?");
 
-		mf.getEntityManagerFactory().createCloudEntityManager().persist(new Topic("Cinema",cinema));
+		mf.getEntityManagerFactory().createCloudEntityManager()
+				.persist(new Topic("Cinema", cinema));
 
 		l.info("Cinema questions added.");
 
-		
-
-		List<String> sport=new ArrayList<String>();
+		List<String> sport = new ArrayList<String>();
 
 		sport.add("How much do you love practice sports?");
 
@@ -175,21 +154,21 @@ public class InsertQuestionsServlet extends HttpServlet {
 
 		sport.add("How much do you love athletics?");
 
-		sport.add("How much do you love boxe?");		
+		sport.add("How much do you love boxe?");
 
 		sport.add("How much do you love swimming???");
 
-		mf.getEntityManagerFactory().createCloudEntityManager().persist(new Topic("Sport",sport));
+		mf.getEntityManagerFactory().createCloudEntityManager()
+				.persist(new Topic("Sport", sport));
 
 		l.info("Sport questions added.");
 
-				
-
-		List<String> technology=new ArrayList<String>();
+		List<String> technology = new ArrayList<String>();
 
 		technology.add("How much do you love technology?");
 
-		technology.add("How often do you follow technologies news???[1-never][2-seldom][3- occasionally][4-often][5-always]");
+		technology
+				.add("How often do you follow technologies news???[1-never][2-seldom][3- occasionally][4-often][5-always]");
 
 		technology.add("How much do you consider yourself a nerd?");
 
@@ -197,23 +176,25 @@ public class InsertQuestionsServlet extends HttpServlet {
 
 		technology.add("How much do you love Microsoft's products? ");
 
-		technology.add("How much do you love and follow  the Open Source world?");
+		technology
+				.add("How much do you love and follow  the Open Source world?");
 
-		technology.add("How much would you like to work in the technology field?");
+		technology
+				.add("How much would you like to work in the technology field?");
 
-		technology.add("How many Internet connectable device do you have?");		
+		technology.add("How many Internet connectable device do you have?");
 
-		technology.add("How often do you frequent chat??? [1-never][2-seldom][3- occasionally][4-often][5-always]");
+		technology
+				.add("How often do you frequent chat??? [1-never][2-seldom][3- occasionally][4-often][5-always]");
 
 		technology.add("In how many social network are you registered?");
 
-		mf.getEntityManagerFactory().createCloudEntityManager().persist(new Topic("Technology",technology));
+		mf.getEntityManagerFactory().createCloudEntityManager()
+				.persist(new Topic("Technology", technology));
 
 		l.info("Technology questions added.");
 
-				
-
-		List<String> love=new ArrayList<String>();
+		List<String> love = new ArrayList<String>();
 
 		love.add("How much do you feel a complete person next to your partner?");
 
@@ -229,19 +210,18 @@ public class InsertQuestionsServlet extends HttpServlet {
 
 		love.add("What weight would you give to a possible betrayal of your partner?");
 
-		love.add("How important is the honesty in a relationship?");		
+		love.add("How important is the honesty in a relationship?");
 
 		love.add("How much do you believe in the eternal love?");
 
 		love.add("How many children would you have?");
 
-		mf.getEntityManagerFactory().createCloudEntityManager().persist(new Topic("Love",love));
+		mf.getEntityManagerFactory().createCloudEntityManager()
+				.persist(new Topic("Love", love));
 
 		l.info("Love questions added.");
 
-		
-
-		List<String> music=new ArrayList<String>();
+		List<String> music = new ArrayList<String>();
 
 		music.add("How much do you love music?");
 
@@ -257,19 +237,18 @@ public class InsertQuestionsServlet extends HttpServlet {
 
 		music.add("How much do you love elettronic music?");
 
-		music.add("How much do you love singer-songwriters's music?");		
+		music.add("How much do you love singer-songwriters's music?");
 
 		music.add("How Much do you love jazz music?");
 
 		music.add("How much do you love dancing?");
 
-		mf.getEntityManagerFactory().createCloudEntityManager().persist(new Topic("Music",music));
+		mf.getEntityManagerFactory().createCloudEntityManager()
+				.persist(new Topic("Music", music));
 
 		l.info("Music questions added.");
 
-		                                                                                                                  
-
-		List<String> politcs=new ArrayList<String>();
+		List<String> politcs = new ArrayList<String>();
 
 		politcs.add("How much is important for you to participate actively in politics??? [1-never][2-seldom][3- occasionally][4-often][5-always]");
 
@@ -285,21 +264,16 @@ public class InsertQuestionsServlet extends HttpServlet {
 
 		politcs.add("How much do you agree in the liberal ideals?");
 
-		politcs.add("How much do you agree to a profound renewal of the political class??");		
+		politcs.add("How much do you agree to a profound renewal of the political class??");
 
 		politcs.add("How much do you agree in the military action as a means of liberation of peoples under a dictatorship?");
 
 		politcs.add("How much do you agree in a more frequent use of the referendum?");
 
-		mf.getEntityManagerFactory().createCloudEntityManager().persist(new Topic("Politics",politcs));
+		mf.getEntityManagerFactory().createCloudEntityManager()
+				.persist(new Topic("Politics", politcs));
 
 		l.info("Politics questions added.");
-
-		
-
-	
-
-
 
 		request.setAttribute("message", "Questions loaded...");
 
@@ -307,15 +281,8 @@ public class InsertQuestionsServlet extends HttpServlet {
 
 		disp = request.getRequestDispatcher("Home.jsp");
 
-			disp.forward(request, response);
-
-		
-
-
+		disp.forward(request, response);
 
 	}
 
-
-
 }
-

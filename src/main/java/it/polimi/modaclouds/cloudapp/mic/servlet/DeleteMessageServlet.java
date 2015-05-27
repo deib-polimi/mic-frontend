@@ -16,71 +16,47 @@
  */
 package it.polimi.modaclouds.cloudapp.mic.servlet;
 
-
-
-
-
 import it.polimi.modaclouds.cpimlibrary.mffactory.MF;
 
-
-
 import java.io.IOException;
-
 import java.sql.Connection;
-
 import java.sql.PreparedStatement;
-
 import java.sql.SQLException;
 
-
-
 import javax.servlet.ServletException;
-
 import javax.servlet.http.HttpServlet;
-
 import javax.servlet.http.HttpServletRequest;
-
 import javax.servlet.http.HttpServletResponse;
-
-
 
 public class DeleteMessageServlet extends HttpServlet {
 
-
-
 	private static final long serialVersionUID = 1L;
 
-
-
+	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 
-			throws ServletException, IOException {
+	throws ServletException, IOException {
 
 		doPost(req, resp);
 
-	    }
+	}
 
-	
-
-	
-
+	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 
-			throws ServletException, IOException {
+	throws ServletException, IOException {
 
-		
+		MF mf = MF.getFactory();
 
-		MF mf=MF.getFactory();
+		String msgId = req.getParameter("msgId");
 
-		String msgId=req.getParameter("msgId");
+		Connection c = mf.getSQLService().getConnection();
 
-		Connection c= mf.getSQLService().getConnection();
-
-		PreparedStatement pstm=null;
+		PreparedStatement pstm = null;
 
 		try {
 
-			pstm= c.prepareStatement("DELETE FROM Message WHERE Id=?");
+			pstm = c.prepareStatement("DELETE FROM Message WHERE Id=?");
 
 			pstm.setString(1, msgId);
 
@@ -92,7 +68,7 @@ public class DeleteMessageServlet extends HttpServlet {
 
 		}
 
-		finally{
+		finally {
 
 			try {
 
@@ -110,9 +86,4 @@ public class DeleteMessageServlet extends HttpServlet {
 
 	}
 
-
-
-
-
 }
-

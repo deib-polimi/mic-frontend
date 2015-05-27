@@ -16,54 +16,32 @@
  */
 package it.polimi.modaclouds.cloudapp.mic.servlet;
 
-
-
-
-
 import it.polimi.modaclouds.cpimlibrary.mffactory.MF;
 
-
-
 import java.io.IOException;
-
 import java.sql.Connection;
-
 import java.sql.PreparedStatement;
-
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
 
-
-
 import javax.servlet.RequestDispatcher;
-
 import javax.servlet.ServletException;
-
 import javax.servlet.http.HttpServlet;
-
 import javax.servlet.http.HttpServletRequest;
-
 import javax.servlet.http.HttpServletResponse;
 
-
-
 /**
-
+ * 
  * Servlet implementation class LoginServlet
-
  */
 
 public class WritePostServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5909797442154638761L;
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#HttpServlet()
-
 	 */
 
 	public WritePostServlet() {
@@ -72,71 +50,52 @@ public class WritePostServlet extends HttpServlet {
 
 	}
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-
 	 *      response)
-
 	 */
 
+	@Override
 	protected void doGet(HttpServletRequest request,
 
-			HttpServletResponse response) throws ServletException, IOException {
+	HttpServletResponse response) throws ServletException, IOException {
 
 		this.doPost(request, response);
 
 	}
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-
 	 *      response)
-
 	 */
 
+	@Override
 	protected void doPost(HttpServletRequest request,
 
-			HttpServletResponse response) throws ServletException, IOException {
-
-		
-
-		
+	HttpServletResponse response) throws ServletException, IOException {
 
 		parseReq(request, response);
 
-		
-
-
-
 	}
 
-
-
 	private void parseReq(HttpServletRequest req, HttpServletResponse response) {
-
-
 
 		try {
 
 			req.setCharacterEncoding("UTF-8");
 
-			String usermail = (String) req.getSession(true).getAttribute("actualUser");
+			String usermail = (String) req.getSession(true).getAttribute(
+					"actualUser");
 
-			if(usermail==null){
+			if (usermail == null) {
 
 				RequestDispatcher disp;
 
 				req.setAttribute(
 
-						"message","Session expired!!!");
-
-				
+				"message", "Session expired!!!");
 
 				disp = req.getRequestDispatcher("Home.jsp");
 
@@ -148,23 +107,25 @@ public class WritePostServlet extends HttpServlet {
 
 			String[] topicList = req.getParameterValues("topic");
 
-			Connection c= MF.getFactory().getSQLService().getConnection();
+			Connection c = MF.getFactory().getSQLService().getConnection();
 
-			PreparedStatement pstm= c.prepareStatement("INSERT INTO Message VALUES(?,?,?,?,?)");
+			PreparedStatement pstm = c
+					.prepareStatement("INSERT INTO Message VALUES(?,?,?,?,?)");
 
 			for (int i = 0; i < topicList.length; i++) {
 
 				String textmsg = req.getParameter("newpost");
 
-				int hashMsg=textmsg.hashCode();
+				int hashMsg = textmsg.hashCode();
 
 				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-				Date date=new Date();
+				Date date = new Date();
 
-				String dateS=df.format(date);
+				String dateS = df.format(date);
 
-				String msgId=String.valueOf((usermail + topicList[i] + date.toString()+hashMsg).hashCode());
+				String msgId = String.valueOf((usermail + topicList[i]
+						+ date.toString() + hashMsg).hashCode());
 
 				pstm.setString(1, msgId);
 
@@ -180,13 +141,9 @@ public class WritePostServlet extends HttpServlet {
 
 			}
 
-			
-
 			pstm.close();
 
 			c.close();
-
-			
 
 			RequestDispatcher disp;
 
@@ -194,19 +151,12 @@ public class WritePostServlet extends HttpServlet {
 
 			disp.forward(req, response);
 
-
-
 		} catch (Exception ex) {
 
 			ex.printStackTrace();
 
 		}
 
-
-
 	}
 
-
-
 }
-

@@ -16,50 +16,30 @@
  */
 package it.polimi.modaclouds.cloudapp.mic.servlet;
 
-
-
-
-
 import it.polimi.modaclouds.cpimlibrary.memcache.CloudMemcache;
-
 import it.polimi.modaclouds.cpimlibrary.mffactory.MF;
 
-
-
 import java.io.IOException;
-
 import java.util.Vector;
 
-
-
 import javax.servlet.RequestDispatcher;
-
 import javax.servlet.ServletException;
-
 import javax.servlet.http.HttpServlet;
-
 import javax.servlet.http.HttpServletRequest;
-
 import javax.servlet.http.HttpServletResponse;
 
-
-
 /**
-
+ * 
  * Servlet implementation class LoginServlet
-
  */
 
 public class LogoutServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5909797442154638761L;
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#HttpServlet()
-
 	 */
 
 	public LogoutServlet() {
@@ -68,39 +48,31 @@ public class LogoutServlet extends HttpServlet {
 
 	}
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-
 	 *      response)
-
 	 */
 
+	@Override
 	protected void doGet(HttpServletRequest request,
 
-			HttpServletResponse response) throws ServletException, IOException {
+	HttpServletResponse response) throws ServletException, IOException {
 
 		this.doPost(request, response);
 
 	}
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-
 	 *      response)
-
 	 */
 
+	@Override
 	protected void doPost(HttpServletRequest request,
 
-			HttpServletResponse response) throws ServletException, IOException {
-
-		
+	HttpServletResponse response) throws ServletException, IOException {
 
 		request.setCharacterEncoding("UTF-8");
 
@@ -108,35 +80,28 @@ public class LogoutServlet extends HttpServlet {
 
 		RequestDispatcher disp;
 
-		String user=(String) request.getSession(true).getAttribute("actualUser");
+		String user = (String) request.getSession(true).getAttribute(
+				"actualUser");
 
-		
-
-		
-
-		if(user!=null)
+		if (user != null)
 
 		{
 
-			CloudMemcache cmc =MF.getFactory().getCloudMemcache();
+			CloudMemcache cmc = MF.getFactory().getCloudMemcache();
 
-			if(cmc.contains(user)){
+			if (cmc.contains(user)) {
 
-				for (String s: (Vector<String>)cmc.get(user))
+				for (String s : (Vector<String>) cmc.get(user))
+					cmc.delete(user + "$" + s);
 
-					{
+				cmc.delete(user);
 
-						cmc.delete(user+"$"+s);
-
-					}
-
-					cmc.delete(user);
-
-				}
+			}
 
 			cmc.close();
 
-		request.setAttribute("message","Bye Bye "+ user+" !!! See you soon....");
+			request.setAttribute("message", "Bye Bye " + user
+					+ " !!! See you soon....");
 
 		}
 
@@ -146,19 +111,10 @@ public class LogoutServlet extends HttpServlet {
 
 		disp = request.getRequestDispatcher("Home.jsp");
 
-		request.getSession(true).setAttribute("actualUser",null);
+		request.getSession(true).setAttribute("actualUser", null);
 
 		disp.forward(request, response);
 
-
-
-		
-
 	}
 
-
-
-
-
 }
-

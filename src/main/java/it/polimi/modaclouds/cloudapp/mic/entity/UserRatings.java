@@ -16,51 +16,33 @@
  */
 package it.polimi.modaclouds.cloudapp.mic.entity;
 
-
-
-
-
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-
-
-
 @SuppressWarnings("serial")
-
 @Entity
 @Table(name = "UserRatings")
-
-@NamedQuery(name="UserRatingsQuery",query="SELECT u FROM UserRatings u")
-
-public class UserRatings implements Serializable{
-
-
+@NamedQuery(name = "UserRatingsQuery", query = "SELECT u FROM UserRatings u")
+public class UserRatings implements Serializable {
 
 	@Id
 	private String id;
-	
+
 	private String email;
-	
+
 	private String topicName;
 
-	//@Embedded
+	// @Embedded
 	private List<String> ratings;
-	
-	
 
-	//private Map<Integer, Integer> ratings;
+	// private Map<Integer, Integer> ratings;
 
 	private String todelete;
-
-
 
 	public UserRatings(String email, String topicName, List<String> ratings)
 
@@ -68,25 +50,20 @@ public class UserRatings implements Serializable{
 
 		super();
 
-		this.id=email+"_"+topicName;
+		this.id = email + "_" + topicName;
 
-		this.email=email;
+		this.email = email;
 
-		this.topicName=topicName;
+		this.topicName = topicName;
 
-		this.ratings=ratings;
+		this.ratings = ratings;
 
-		this.todelete=new String("true");
-
-		
+		this.todelete = new String("true");
 
 	}
 
-	
-
-	public UserRatings(){}
-
-	
+	public UserRatings() {
+	}
 
 	public String getId() {
 
@@ -148,7 +125,4 @@ public class UserRatings implements Serializable{
 
 	}
 
-	
-
 }
-

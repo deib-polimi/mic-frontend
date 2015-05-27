@@ -16,15 +16,8 @@
  */
 package it.polimi.modaclouds.cloudapp.mic.servlet;
 
-
-
-
-
 import it.polimi.modaclouds.cpimlibrary.mffactory.MF;
-
-
-
-import it.polimi.modaclouds.monitoring.appleveldc.Monitor;
+import it.polimi.tower4clouds.java_app_dc.Monitor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,17 +27,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 
-
-
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-
-
 
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
@@ -53,24 +40,18 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.io.IOUtils;
 
-
-
 /**
-
+ * 
  * Servlet implementation class LoginServlet
-
  */
 
 public class RegisterServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5909797442154638761L;
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#HttpServlet()
-
 	 */
 
 	public RegisterServlet() {
@@ -79,61 +60,42 @@ public class RegisterServlet extends HttpServlet {
 
 	}
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-
 	 *      response)
-
 	 */
 
+	@Override
 	protected void doGet(HttpServletRequest request,
 
-			HttpServletResponse response) throws ServletException, IOException {
+	HttpServletResponse response) throws ServletException, IOException {
 
 		this.doPost(request, response);
 
 	}
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-
 	 *      response)
-
 	 */
-	@Monitor(name = "register")
+	@Override
+	@Monitor(type = "register")
 	protected void doPost(HttpServletRequest request,
 
-			HttpServletResponse response) throws ServletException, IOException {
-
-		
+	HttpServletResponse response) throws ServletException, IOException {
 
 		parseReq(request, response);
 
-		
-
-		
-
-		
-
-
-
 	}
 
-
-
-	private void parseReq(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
-
-
+	private void parseReq(HttpServletRequest req, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		try {
 
-			MF mf=MF.getFactory();
+			MF mf = MF.getFactory();
 
 			req.setCharacterEncoding("UTF-8");
 
@@ -148,8 +110,6 @@ public class RegisterServlet extends HttpServlet {
 				FileItemStream item = iterator.next();
 
 				InputStream stream = item.openStream();
-
-
 
 				if (item.isFormField()) {
 
@@ -169,23 +129,22 @@ public class RegisterServlet extends HttpServlet {
 
 					String mail = map.get("mail");
 
-					if(mail!=null){
-
-						filename= mail+"_"+String.valueOf(filename.hashCode())+"."+extension[extension.length-1];
-
-					}else{
-
-						filename= String.valueOf(filename.hashCode())+"."+extension[extension.length-1];
-
-					}
+					if (mail != null)
+						filename = mail + "_"
+								+ String.valueOf(filename.hashCode()) + "."
+								+ extension[extension.length - 1];
+					else
+						filename = String.valueOf(filename.hashCode()) + "."
+								+ extension[extension.length - 1];
 
 					map.put("filename", filename);
 
-					 byte[] buffer = IOUtils.toByteArray(stream);
+					byte[] buffer = IOUtils.toByteArray(stream);
 
-					 mf.getBlobManagerFactory().createCloudBlobManager().uploadBlob(buffer,
+					mf.getBlobManagerFactory().createCloudBlobManager()
+							.uploadBlob(buffer,
 
-					 filename);
+							filename);
 
 					stream.close();
 
@@ -201,53 +160,48 @@ public class RegisterServlet extends HttpServlet {
 
 			String dayS = map.get("day");
 
-			String monthS= map.get("month");
+			String monthS = map.get("month");
 
-			String yearS= map.get("year");
+			String yearS = map.get("year");
 
 			String password = map.get("password");
 
 			String filename = map.get("filename");
 
-			String date=yearS+"-"+monthS+"-"+dayS;
+			String date = yearS + "-" + monthS + "-" + dayS;
 
 			char gender = map.get("gender").charAt(0);
 
 			RequestDispatcher disp;
 
-			Connection c=mf.getSQLService().getConnection();
+			Connection c = mf.getSQLService().getConnection();
 
-			String stm="INSERT INTO UserProfile VALUES('"+email+"', '"+ password +"', '"+ firstName+"', '"+ lastName+"', '"+date+"', '"+gender+"', '"+ filename +"')" ;
+			String stm = "INSERT INTO UserProfile VALUES('" + email + "', '"
+					+ password + "', '" + firstName + "', '" + lastName
+					+ "', '" + date + "', '" + gender + "', '" + filename
+					+ "')";
 
 			Statement statement = c.createStatement();
 
 			statement.executeUpdate(stm);
 
-			
-
 			statement.close();
 
 			c.close();
 
-			
-
 			req.getSession(true).setAttribute("actualUser", email);
 
-			req.getSession(true).setAttribute("edit","false");
+			req.getSession(true).setAttribute("edit", "false");
 
 			disp = req.getRequestDispatcher("SelectTopic.jsp");
 
 			disp.forward(req, response);
 
-		
-
 		} catch (UnsupportedEncodingException e) {
 
 			e.printStackTrace();
 
-		
-
-		}  catch (SQLException e) {
+		} catch (SQLException e) {
 
 			e.printStackTrace();
 
@@ -256,8 +210,6 @@ public class RegisterServlet extends HttpServlet {
 			e.printStackTrace();
 
 		}
-
-		
 
 	}
 

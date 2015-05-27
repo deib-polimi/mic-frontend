@@ -16,129 +16,71 @@
  */
 package it.polimi.modaclouds.cloudapp.mic.servlet;
 
-
-
-
-
 import it.polimi.modaclouds.cpimlibrary.blobmng.CloudDownloadBlob;
-
 import it.polimi.modaclouds.cpimlibrary.mffactory.MF;
 
-
-
 import java.io.BufferedOutputStream;
-
 import java.io.IOException;
-
 import java.io.InputStream;
 
-
-
 import javax.servlet.ServletException;
-
 import javax.servlet.ServletOutputStream;
-
 import javax.servlet.http.HttpServlet;
-
 import javax.servlet.http.HttpServletRequest;
-
 import javax.servlet.http.HttpServletResponse;
-
-
 
 public class DownloadFileServlet extends HttpServlet {
 
-
-
 	private static final long serialVersionUID = 1L;
 
-
-
+	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 
-			throws ServletException, IOException {
+	throws ServletException, IOException {
 
-		MF mf=MF.getFactory();
+		MF mf = MF.getFactory();
 
-		
+		String fileName = req.getParameter("fileName");
 
-		String fileName=req.getParameter("fileName");
-
-        CloudDownloadBlob cdb = mf.getBlobManagerFactory().createCloudBlobManager().downloadBlob(fileName);
+		CloudDownloadBlob cdb = mf.getBlobManagerFactory()
+				.createCloudBlobManager().downloadBlob(fileName);
 
 		InputStream streamDown = cdb.getFileStream();
 
-	
+		resp.setContentLength((int) cdb.getSize());
 
+		resp.setContentType(cdb.getContentType());
 
+		resp.setHeader("Content-Disposition", "attachment; filename=\""
 
+		+ fileName + "\"");
 
+		ServletOutputStream out = resp.getOutputStream();
 
-	        resp.setContentLength((int)cdb.getSize());
+		BufferedOutputStream bufferOut = new BufferedOutputStream(out);
 
-	        resp.setContentType(cdb.getContentType());
+		int b = 0;
 
+		byte[] bufferData = new byte[8192];
 
+		while ((b = streamDown.read(bufferData)) != -1)
+			bufferOut.write(bufferData, 0, b);
 
-	        resp.setHeader("Content-Disposition", "attachment; filename=\""
+		bufferOut.flush();
 
-	                + fileName + "\"");
+		bufferOut.close();
 
+		out.close();
 
-
-	        ServletOutputStream out = resp.getOutputStream();
-
-
-
-	        BufferedOutputStream bufferOut = new BufferedOutputStream(out);
-
-
-
-	        int b = 0;
-
-
-
-	        byte[] bufferData = new byte[8192];
-
-
-
-	        while ((b = streamDown.read(bufferData)) != -1) {
-
-	            bufferOut.write(bufferData, 0, b);
-
-	        }
-
-
-
-	        bufferOut.flush();
-
-
-
-	        bufferOut.close();
-
-	        out.close();
-
-	        streamDown.close();
-
-
-
-	    }
-
-	
-
-
-
-	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-
-			throws ServletException, IOException {
-
-
+		streamDown.close();
 
 	}
 
+	@Override
+	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 
+	throws ServletException, IOException {
 
-
+	}
 
 }
-

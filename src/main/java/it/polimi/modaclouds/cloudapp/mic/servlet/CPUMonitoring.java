@@ -16,47 +16,35 @@
  */
 package it.polimi.modaclouds.cloudapp.mic.servlet;
 
-
-
-
-
 import it.polimi.modaclouds.cpimlibrary.mffactory.MF;
 
-
-
 import java.sql.Connection;
-
 import java.sql.Statement;
-
 import java.util.logging.Logger;
-
-
 
 public class CPUMonitoring {
 
-	
-
-	private static Boolean monitoringMode=false;
+	private static Boolean monitoringMode = false;
 
 	public static void saveLogs(String servlet, int diff, int start, int end)
 
 	{
 
-		Logger l=Logger.getLogger("it.polimi.modaclouds.cloudapp.mic.servlet");
+		Logger l = Logger
+				.getLogger("it.polimi.modaclouds.cloudapp.mic.servlet");
 
-		Connection c=MF.getFactory().getSQLService().getConnection();
+		Connection c = MF.getFactory().getSQLService().getConnection();
 
-		long time=System.currentTimeMillis();
+		long time = System.currentTimeMillis();
 
-		String mykey=servlet+time;
+		String mykey = servlet + time;
 
-		String stm="INSERT INTO cpulogs VALUES('"+mykey+"', '"+ servlet+"', "+diff+", "+ start+", "+end+")" ;
-
-		
+		String stm = "INSERT INTO cpulogs VALUES('" + mykey + "', '" + servlet
+				+ "', " + diff + ", " + start + ", " + end + ")";
 
 		try {
 
-			Statement statement=c.createStatement();
+			Statement statement = c.createStatement();
 
 			statement.executeUpdate(stm);
 
@@ -66,7 +54,7 @@ public class CPUMonitoring {
 
 		} catch (Exception e) {
 
-			l.info("NON RIUSCITO SALVATAGGIO CPU LOGS:"+e.getMessage());
+			l.info("NON RIUSCITO SALVATAGGIO CPU LOGS:" + e.getMessage());
 
 		}
 
@@ -76,7 +64,7 @@ public class CPUMonitoring {
 
 	{
 
-		return monitoringMode; 
+		return monitoringMode;
 
 	}
 
@@ -84,11 +72,8 @@ public class CPUMonitoring {
 
 	{
 
-		monitoringMode=true;
+		monitoringMode = true;
 
 	}
 
-
-
 }
-

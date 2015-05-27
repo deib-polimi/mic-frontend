@@ -16,10 +16,7 @@
  */
 package it.polimi.modaclouds.cloudapp.mic.servlet;
 
-
-
 import it.polimi.modaclouds.cpimlibrary.mffactory.MF;
-import it.polimi.modaclouds.monitoring.appleveldc.Monitor;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -33,23 +30,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /**
-
+ * 
  * Servlet implementation class LoginServlet
-
  */
 
 public class LoginServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5909797442154638761L;
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#HttpServlet()
-
 	 */
 
 	public LoginServlet() {
@@ -58,37 +50,31 @@ public class LoginServlet extends HttpServlet {
 
 	}
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-
 	 *      response)
-
 	 */
 
+	@Override
 	protected void doGet(HttpServletRequest request,
 
-			HttpServletResponse response) throws ServletException, IOException {
+	HttpServletResponse response) throws ServletException, IOException {
 
 		this.doPost(request, response);
 
 	}
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-
 	 *      response)
-
 	 */
-//	@Monitor(name = "login")
+	// @Monitor(name = "login")
+	@Override
 	protected void doPost(HttpServletRequest request,
 
-			HttpServletResponse response) throws ServletException, IOException {
+	HttpServletResponse response) throws ServletException, IOException {
 
 		try {
 
@@ -96,57 +82,40 @@ public class LoginServlet extends HttpServlet {
 
 			response.setCharacterEncoding("UTF-8");
 
-			MF mf=MF.getFactory();
+			MF mf = MF.getFactory();
 
-			String mail= request.getParameter("mail");
+			String mail = request.getParameter("mail");
 
-			String password=request.getParameter("password");
+			String password = request.getParameter("password");
 
-			Connection c=	mf.getSQLService().getConnection();
+			Connection c = mf.getSQLService().getConnection();
 
-			String stm="SELECT Password FROM UserProfile WHERE Email='"+mail+"'";
+			String stm = "SELECT Password FROM UserProfile WHERE Email='"
+					+ mail + "'";
 
 			Statement statement;
 
 			statement = c.createStatement();
 
-			ResultSet result=statement.executeQuery(stm);
+			ResultSet result = statement.executeQuery(stm);
 
-			if(result.next())
-
-			{
-
-				String resultPass=result.getString("Password");
-
-				if(resultPass.equals(password))
-
-				{
-
-					access(request, response,mail);
-
-				}
-
-				else{
-
-					reject(request,response);
-
-				}
-
-			}
-
-			else
+			if (result.next())
 
 			{
 
-				reject(request,response);
+				String resultPass = result.getString("Password");
 
-			}
+				if (resultPass.equals(password))
+					access(request, response, mail);
+				else
+					reject(request, response);
+
+			} else
+				reject(request, response);
 
 			statement.close();
 
 			c.close();
-
-			
 
 		} catch (SQLException e) {
 
@@ -154,43 +123,30 @@ public class LoginServlet extends HttpServlet {
 
 		}
 
-		
-
 	}
 
-
-
-	
-
-
-
-	private void reject(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void reject(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		RequestDispatcher disp;
 
 		request.setAttribute(
 
-				"message","Mail or password wrong!!");
-
-		
+		"message", "Mail or password wrong!!");
 
 		disp = request.getRequestDispatcher("Home.jsp");
 
 		disp.forward(request, response);
 
-
-
-		
-
 	}
 
-
-
-	private void access(HttpServletRequest request, HttpServletResponse response, String mail) throws ServletException, IOException {
+	private void access(HttpServletRequest request,
+			HttpServletResponse response, String mail) throws ServletException,
+			IOException {
 
 		RequestDispatcher disp;
 
-		request.getSession(true).setAttribute("actualUser",mail);
+		request.getSession(true).setAttribute("actualUser", mail);
 
 		disp = request.getRequestDispatcher("Showcase.jsp");
 
@@ -198,15 +154,4 @@ public class LoginServlet extends HttpServlet {
 
 	}
 
-	
-
-
-
-	 
-
-
-
-
-
 }
-

@@ -16,18 +16,11 @@
  */
 package it.polimi.modaclouds.cloudapp.mic.servlet;
 
-
-
-
-
 import it.polimi.modaclouds.cloudapp.mic.entity.UserRatings;
 import it.polimi.modaclouds.cpimlibrary.entitymng.CloudEntityManager;
 import it.polimi.modaclouds.cpimlibrary.memcache.CloudMemcache;
 import it.polimi.modaclouds.cpimlibrary.mffactory.MF;
-
-
-
-import it.polimi.modaclouds.monitoring.appleveldc.Monitor;
+import it.polimi.tower4clouds.java_app_dc.Monitor;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -36,33 +29,24 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
 /**
-
+ * 
  * Servlet implementation class LoginServlet
-
  */
 
 public class AnswerQuestionsServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5909797442154638761L;
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#HttpServlet()
-
 	 */
 
 	public AnswerQuestionsServlet() {
@@ -71,53 +55,44 @@ public class AnswerQuestionsServlet extends HttpServlet {
 
 	}
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-
 	 *      response)
-
 	 */
 
+	@Override
 	protected void doGet(HttpServletRequest request,
 
-			HttpServletResponse response) throws ServletException, IOException {
+	HttpServletResponse response) throws ServletException, IOException {
 
 		this.doPost(request, response);
 
 	}
 
-
-
 	/**
-
+	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-
 	 *      response)
-
 	 */
-	@Monitor(name = "answerQuestions")
+	@Override
+	@Monitor(type = "answerQuestions")
 	protected void doPost(HttpServletRequest request,
 
-			HttpServletResponse response) throws ServletException, IOException {
-
-		
+	HttpServletResponse response) throws ServletException, IOException {
 
 		request.setCharacterEncoding("UTF-8");
 
-		String usermail = (String) request.getSession(true).getAttribute("actualUser");
+		String usermail = (String) request.getSession(true).getAttribute(
+				"actualUser");
 
-		if(usermail==null){
+		if (usermail == null) {
 
 			RequestDispatcher disp;
 
 			request.setAttribute(
 
-					"message","Session expired!!!");
-
-			
+			"message", "Session expired!!!");
 
 			disp = request.getRequestDispatcher("Home.jsp");
 
@@ -127,11 +102,9 @@ public class AnswerQuestionsServlet extends HttpServlet {
 
 		}
 
-		MF mf=MF.getFactory();
+		MF mf = MF.getFactory();
 
 		ArrayList<String> topicList = new ArrayList<String>();
-
-
 
 		if (request.getParameter("reading") != null)
 
@@ -161,35 +134,28 @@ public class AnswerQuestionsServlet extends HttpServlet {
 
 			topicList.add("Politics");
 
-
-
 		int pointer = 0;
 
 		boolean edit = new Boolean((String) request.getSession(true)
 
-				.getAttribute("edit"));
-
-		
+		.getAttribute("edit"));
 
 		if (edit) {
 
 			CloudEntityManager em = mf.getEntityManagerFactory()
 
-					.createCloudEntityManager();
+			.createCloudEntityManager();
 
 			@SuppressWarnings("unchecked")
-
 			List<UserRatings> oldRatings = em
 
-					.createQuery(
+			.createQuery(
 
-							"SELECT ur FROM UserRatings ur WHERE ur.email=:email")
+			"SELECT ur FROM UserRatings ur WHERE ur.email=:email")
 
-					.setParameter("email",usermail).getResultList();
+			.setParameter("email", usermail).getResultList();
 
-			
-
-			CloudMemcache mc= mf.getCloudMemcache();
+			CloudMemcache mc = mf.getCloudMemcache();
 
 			mc.delete(usermail);
 
@@ -197,7 +163,7 @@ public class AnswerQuestionsServlet extends HttpServlet {
 
 				em.remove(old);
 
-				mc.delete(usermail+"$"+old.getTopicName());
+				mc.delete(usermail + "$" + old.getTopicName());
 
 			}
 
@@ -207,11 +173,12 @@ public class AnswerQuestionsServlet extends HttpServlet {
 
 			try {
 
-				Connection c =mf.getSQLService().getConnection();
+				Connection c = mf.getSQLService().getConnection();
 
 				Statement statement = c.createStatement();
 
-				String stm = "DELETE FROM UserSimilarity WHERE Email='"+usermail+"'";
+				String stm = "DELETE FROM UserSimilarity WHERE Email='"
+						+ usermail + "'";
 
 				statement.executeUpdate(stm);
 
@@ -225,8 +192,6 @@ public class AnswerQuestionsServlet extends HttpServlet {
 
 			}
 
-
-
 		}
 
 		request.getSession(true).setAttribute("topicList", topicList);
@@ -238,8 +203,6 @@ public class AnswerQuestionsServlet extends HttpServlet {
 		disp = request.getRequestDispatcher("DisplayQuestion.jsp");
 
 		disp.forward(request, response);
-
-		
 
 	}
 
