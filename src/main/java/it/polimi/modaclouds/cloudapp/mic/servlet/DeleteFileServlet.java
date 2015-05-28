@@ -32,9 +32,7 @@ public class DeleteFileServlet extends HttpServlet {
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-
-	throws ServletException, IOException {
-
+			throws ServletException, IOException {
 		MF mf = MF.getFactory();
 
 		String fileName = req.getParameter("fileName");
@@ -42,19 +40,14 @@ public class DeleteFileServlet extends HttpServlet {
 		mf.getBlobManagerFactory().createCloudBlobManager()
 				.deleteBlob(fileName);
 
-		RequestDispatcher disp;
-
-		disp = req.getRequestDispatcher("Download.jsp");
-
+		RequestDispatcher disp = req.getRequestDispatcher("Download.jsp");
 		disp.forward(req, resp);
-
 	}
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-
-	throws ServletException, IOException {
-
+			throws ServletException, IOException {
+		doGet(req, resp);
 	}
 
 }

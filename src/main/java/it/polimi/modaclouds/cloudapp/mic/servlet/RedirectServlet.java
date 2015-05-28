@@ -28,9 +28,7 @@ public class RedirectServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	public RedirectServlet() {
-
 		super();
-
 	}
 
 	/**
@@ -38,14 +36,10 @@ public class RedirectServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-
 	@Override
 	protected void doGet(HttpServletRequest request,
-
-	HttpServletResponse response) throws ServletException, IOException {
-
+			HttpServletResponse response) throws ServletException, IOException {
 		this.doPost(request, response);
-
 	}
 
 	/**
@@ -53,20 +47,13 @@ public class RedirectServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-
 	@Override
 	protected void doPost(HttpServletRequest request,
-
-	HttpServletResponse response) throws ServletException, IOException {
-
+			HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-
 		response.setCharacterEncoding("UTF-8");
-
 		request.setAttribute("message", "Session expired!!");
-
 		request.getRequestDispatcher("Home.jsp").forward(request, response);
-
 	}
 
 }

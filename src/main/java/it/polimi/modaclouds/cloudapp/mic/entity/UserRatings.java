@@ -44,85 +44,57 @@ public class UserRatings implements Serializable {
 
 	private String todelete;
 
-	public UserRatings(String email, String topicName, List<String> ratings)
-
-	{
-
+	public UserRatings(String email, String topicName, List<String> ratings) {
 		super();
 
 		this.id = email + "_" + topicName;
-
 		this.email = email;
-
 		this.topicName = topicName;
-
 		this.ratings = ratings;
-
 		this.todelete = new String("true");
-
 	}
 
 	public UserRatings() {
 	}
 
 	public String getId() {
-
 		return id;
-
 	}
 
 	public void setId(String id) {
-
 		this.id = id;
-
 	}
 
 	public String getEmail() {
-
 		return email;
-
 	}
 
 	public void setEmail(String email) {
-
 		this.email = email;
-
 	}
 
 	public String getTopicName() {
-
 		return topicName;
-
 	}
 
 	public void setTopicName(String topicName) {
-
 		this.topicName = topicName;
-
 	}
 
 	public List<String> getRatings() {
-
 		return ratings;
-
 	}
 
 	public void setRatings(List<String> ratings) {
-
 		this.ratings = ratings;
-
 	}
 
 	public String getTodelete() {
-
 		return todelete;
-
 	}
 
 	public void setTodelete(String todelete) {
-
 		this.todelete = todelete;
-
 	}
 
 }

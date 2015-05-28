@@ -21,7 +21,6 @@ import it.polimi.modaclouds.cpimlibrary.mffactory.MF;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Statement;
-import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -29,24 +28,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  * Servlet implementation class LoginServlet
  */
-
 public class InitializedSQLTableServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5909797442154638761L;
+	private static final Logger logger = LoggerFactory.getLogger(InitializedSQLTableServlet.class);
 
 	/**
 	 * 
 	 * @see HttpServlet#HttpServlet()
 	 */
-
 	public InitializedSQLTableServlet() {
-
 		super();
-
 	}
 
 	/**
@@ -54,14 +53,10 @@ public class InitializedSQLTableServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-
 	@Override
 	protected void doGet(HttpServletRequest request,
-
-	HttpServletResponse response) throws ServletException, IOException {
-
+			HttpServletResponse response) throws ServletException, IOException {
 		this.doPost(request, response);
-
 	}
 
 	/**
@@ -69,64 +64,42 @@ public class InitializedSQLTableServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-
 	@Override
 	protected void doPost(HttpServletRequest request,
-
-	HttpServletResponse response) throws ServletException, IOException {
+			HttpServletResponse response) throws ServletException, IOException {
 
 		MF mf = MF.getFactory();
 
-		Logger l = Logger.getLogger("it.polimi.modaclouds.cloudapp");
-
 		request.setCharacterEncoding("UTF-8");
-
 		response.setCharacterEncoding("UTF-8");
 
 		Connection c = mf.getSQLService().getConnection();
+		if (c == null) {
+			logger.error("CONNECTION TO DB FAILED");
+			return;
+		}
 
 		String stm = "CREATE TABLE UserProfile (Email VARCHAR(255) NOT NULL, Password VARCHAR(255) NOT NULL, FirstName VARCHAR(255), LastName VARCHAR(255), Date_of_birth DATE, Gender CHAR(1) NOT NULL, Picture VARCHAR(255), PRIMARY KEY(Email))";
-
 		String stm2 = "CREATE TABLE UserSimilarity (Email VARCHAR(255) NOT NULL, Topic VARCHAR(255) NOT NULL, FirstUser VARCHAR(255), SecondUser VARCHAR(255), ThirdUser VARCHAR(255), CONSTRAINT simID PRIMARY KEY (Email,Topic), FOREIGN KEY (FirstUser) REFERENCES UserProfile(Email), FOREIGN KEY (SecondUser) REFERENCES UserProfile(Email), FOREIGN KEY (ThirdUser) REFERENCES UserProfile(Email))";
-
 		String stm3 = "CREATE TABLE Message (Id VARCHAR(255) NOT NULL, UserId VARCHAR(255) NOT NULL, Date DATE, MessageTxt TEXT, Topic VARCHAR(255), PRIMARY KEY(Id), FOREIGN KEY (UserId) REFERENCES UserProfile(Email))";
 
-		if (c == null)
-
-			l.info("CONNECTION TO DB FAILED");
-
 		Statement statement;
-
 		try {
-
 			statement = c.createStatement();
-
 			statement.executeUpdate(stm);
-
 			statement.executeUpdate(stm2);
-
 			statement.executeUpdate(stm3);
 
 			statement.close();
-
 			c.close();
-
 		} catch (Exception e) {
-
-			l.info("ERROR CREATING CONNECTION TO DB");
-
-			l.info("PRINTSTACKTRACE:" + e.getMessage());
-
+			logger.error("ERROR CREATING CONNECTION TO DB", e);
 		}
 
 		request.setAttribute("message", "SQL Table initialized...");
 
-		RequestDispatcher disp;
-
-		disp = request.getRequestDispatcher("Home.jsp");
-
+		RequestDispatcher disp = request.getRequestDispatcher("Home.jsp");
 		disp.forward(request, response);
-
 	}
 
 }

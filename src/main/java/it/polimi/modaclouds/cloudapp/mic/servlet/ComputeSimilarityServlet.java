@@ -23,42 +23,31 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ComputeSimilarityServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LoggerFactory.getLogger(ComputeSimilarityServlet.class);
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-
-	throws ServletException, IOException {
-
-		System.out.println("eccomi dal frontend");
+			throws ServletException, IOException {
+		logger.info("eccomi dal frontend");
 
 		String usermail = req.getParameter("user");
-
 		String edit = req.getParameter("edit");
 
-		System.out.println("user = " + usermail + " edit = " + edit);
+		logger.info("user = " + usermail + " edit = " + edit);
 
 		new ComputeSimilarity(usermail, edit);
-
 	}
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-
-	throws ServletException, IOException {
-
-		System.out.println("eccomi dal frontend");
-
-		String usermail = req.getParameter("user");
-
-		String edit = req.getParameter("edit");
-
-		System.out.println("user = " + usermail + " edit = " + edit);
-
-		new ComputeSimilarity(usermail, edit);
-
+			throws ServletException, IOException {
+		doGet(req, resp);
 	}
 
 }

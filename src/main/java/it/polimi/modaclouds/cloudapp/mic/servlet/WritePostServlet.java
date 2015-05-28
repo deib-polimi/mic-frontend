@@ -30,24 +30,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  * Servlet implementation class LoginServlet
  */
-
 public class WritePostServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5909797442154638761L;
+	private static final Logger logger = LoggerFactory.getLogger(WritePostServlet.class);
 
 	/**
 	 * 
 	 * @see HttpServlet#HttpServlet()
 	 */
-
 	public WritePostServlet() {
-
 		super();
-
 	}
 
 	/**
@@ -55,14 +55,10 @@ public class WritePostServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-
 	@Override
 	protected void doGet(HttpServletRequest request,
-
-	HttpServletResponse response) throws ServletException, IOException {
-
+			HttpServletResponse response) throws ServletException, IOException {
 		this.doPost(request, response);
-
 	}
 
 	/**
@@ -70,91 +66,56 @@ public class WritePostServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-
 	@Override
 	protected void doPost(HttpServletRequest request,
-
-	HttpServletResponse response) throws ServletException, IOException {
-
+			HttpServletResponse response) throws ServletException, IOException {
 		parseReq(request, response);
-
 	}
 
 	private void parseReq(HttpServletRequest req, HttpServletResponse response) {
-
 		try {
-
 			req.setCharacterEncoding("UTF-8");
 
 			String usermail = (String) req.getSession(true).getAttribute(
 					"actualUser");
 
 			if (usermail == null) {
-
 				RequestDispatcher disp;
-
-				req.setAttribute(
-
-				"message", "Session expired!!!");
-
+				req.setAttribute("message", "Session expired!!!");
 				disp = req.getRequestDispatcher("Home.jsp");
-
 				disp.forward(req, response);
-
 				return;
-
 			}
 
 			String[] topicList = req.getParameterValues("topic");
 
 			Connection c = MF.getFactory().getSQLService().getConnection();
-
 			PreparedStatement pstm = c
 					.prepareStatement("INSERT INTO Message VALUES(?,?,?,?,?)");
 
 			for (int i = 0; i < topicList.length; i++) {
-
 				String textmsg = req.getParameter("newpost");
-
 				int hashMsg = textmsg.hashCode();
-
 				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-
 				Date date = new Date();
-
 				String dateS = df.format(date);
-
 				String msgId = String.valueOf((usermail + topicList[i]
 						+ date.toString() + hashMsg).hashCode());
-
 				pstm.setString(1, msgId);
-
 				pstm.setString(2, usermail);
-
 				pstm.setString(3, dateS);
-
 				pstm.setString(4, textmsg);
-
 				pstm.setString(5, topicList[i]);
-
 				pstm.executeUpdate();
-
 			}
 
 			pstm.close();
-
 			c.close();
 
-			RequestDispatcher disp;
-
-			disp = req.getRequestDispatcher("Showcase.jsp");
-
+			RequestDispatcher disp = req.getRequestDispatcher("Showcase.jsp");
 			disp.forward(req, response);
-
 		} catch (Exception ex) {
-
-			ex.printStackTrace();
-
+			logger.error("Error while parsing the request.", ex);
 		}
 
 	}

@@ -35,24 +35,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  * Servlet implementation class LoginServlet
  */
-
 public class AnswerQuestionsServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5909797442154638761L;
+	private static final Logger logger = LoggerFactory.getLogger(AnswerQuestionsServlet.class);
 
 	/**
 	 * 
 	 * @see HttpServlet#HttpServlet()
 	 */
-
 	public AnswerQuestionsServlet() {
-
 		super();
-
 	}
 
 	/**
@@ -60,14 +60,10 @@ public class AnswerQuestionsServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-
 	@Override
 	protected void doGet(HttpServletRequest request,
-
-	HttpServletResponse response) throws ServletException, IOException {
-
+			HttpServletResponse response) throws ServletException, IOException {
 		this.doPost(request, response);
-
 	}
 
 	/**
@@ -78,132 +74,86 @@ public class AnswerQuestionsServlet extends HttpServlet {
 	@Override
 	@Monitor(type = "answerQuestions")
 	protected void doPost(HttpServletRequest request,
-
-	HttpServletResponse response) throws ServletException, IOException {
-
+			HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 
 		String usermail = (String) request.getSession(true).getAttribute(
 				"actualUser");
 
 		if (usermail == null) {
+			request.setAttribute("message", "Session expired!!!");
 
-			RequestDispatcher disp;
-
-			request.setAttribute(
-
-			"message", "Session expired!!!");
-
-			disp = request.getRequestDispatcher("Home.jsp");
-
+			RequestDispatcher disp = request.getRequestDispatcher("Home.jsp");
 			disp.forward(request, response);
-
 			return;
-
 		}
 
 		MF mf = MF.getFactory();
 
 		ArrayList<String> topicList = new ArrayList<String>();
-
 		if (request.getParameter("reading") != null)
-
 			topicList.add("Reading");
-
 		if (request.getParameter("cinema") != null)
-
 			topicList.add("Cinema");
-
 		if (request.getParameter("sport") != null)
-
 			topicList.add("Sport");
-
 		if (request.getParameter("technology") != null)
-
 			topicList.add("Technology");
-
 		if (request.getParameter("love") != null)
-
 			topicList.add("Love");
-
 		if (request.getParameter("music") != null)
-
 			topicList.add("Music");
-
 		if (request.getParameter("politics") != null)
-
 			topicList.add("Politics");
 
 		int pointer = 0;
 
 		boolean edit = new Boolean((String) request.getSession(true)
-
-		.getAttribute("edit"));
+				.getAttribute("edit"));
 
 		if (edit) {
-
 			CloudEntityManager em = mf.getEntityManagerFactory()
-
-			.createCloudEntityManager();
+					.createCloudEntityManager();
 
 			@SuppressWarnings("unchecked")
 			List<UserRatings> oldRatings = em
-
-			.createQuery(
-
-			"SELECT ur FROM UserRatings ur WHERE ur.email=:email")
-
-			.setParameter("email", usermail).getResultList();
+					.createQuery(
+							"SELECT ur FROM UserRatings ur WHERE ur.email=:email")
+					.setParameter("email", usermail).getResultList();
 
 			CloudMemcache mc = mf.getCloudMemcache();
 
 			mc.delete(usermail);
 
 			for (UserRatings old : oldRatings) {
-
 				em.remove(old);
-
 				mc.delete(usermail + "$" + old.getTopicName());
-
 			}
 
 			mc.close();
-
 			em.close();
 
 			try {
-
 				Connection c = mf.getSQLService().getConnection();
-
 				Statement statement = c.createStatement();
 
 				String stm = "DELETE FROM UserSimilarity WHERE Email='"
 						+ usermail + "'";
 
 				statement.executeUpdate(stm);
-
 				statement.close();
-
 				c.close();
-
 			} catch (SQLException e) {
-
-				e.printStackTrace();
-
+				logger.error("Error while accessing the database.", e);
 			}
-
 		}
 
 		request.getSession(true).setAttribute("topicList", topicList);
-
 		request.getSession(true).setAttribute("pointer", pointer);
 
-		RequestDispatcher disp = null;
-
-		disp = request.getRequestDispatcher("DisplayQuestion.jsp");
-
+		RequestDispatcher disp = request
+				.getRequestDispatcher("DisplayQuestion.jsp");
 		disp.forward(request, response);
-
 	}
 
 }

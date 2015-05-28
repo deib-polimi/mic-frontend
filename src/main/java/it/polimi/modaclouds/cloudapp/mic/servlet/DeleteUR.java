@@ -34,7 +34,6 @@ import javax.servlet.http.HttpServletResponse;
  * This class is used only for testing purpose, to delete automatically the
  * ratings saved during the test
  */
-
 public class DeleteUR extends HttpServlet {
 
 	private static final long serialVersionUID = 5909797442154638761L;
@@ -43,11 +42,8 @@ public class DeleteUR extends HttpServlet {
 	 * 
 	 * @see HttpServlet#HttpServlet()
 	 */
-
 	public DeleteUR() {
-
 		super();
-
 	}
 
 	/**
@@ -55,14 +51,10 @@ public class DeleteUR extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-
 	@Override
 	protected void doGet(HttpServletRequest request,
-
-	HttpServletResponse response) throws ServletException, IOException {
-
+			HttpServletResponse response) throws ServletException, IOException {
 		this.doPost(request, response);
-
 	}
 
 	/**
@@ -70,25 +62,18 @@ public class DeleteUR extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-
 	@Override
 	protected void doPost(HttpServletRequest request,
-
-	HttpServletResponse response) throws ServletException, IOException {
-
+			HttpServletResponse response) throws ServletException, IOException {
 		MF mf = MF.getFactory();
-
 		CloudEntityManagerFactory emf = mf.getEntityManagerFactory();
-
 		CloudEntityManager em = emf.createCloudEntityManager();
 
+		@SuppressWarnings("unchecked")
 		List<UserRatings> oldRatings = em
-
-		.createQuery(
-
-		"SELECT ur FROM UserRatings ur WHERE ur.todelete=:email")
-
-		.setParameter("email", "true").getResultList();
+				.createQuery(
+						"SELECT ur FROM UserRatings ur WHERE ur.todelete=:email")
+				.setParameter("email", "true").getResultList();
 
 		response.getWriter()
 				.write("CANCELLO " + oldRatings.size() + " RATINGS");
@@ -97,7 +82,6 @@ public class DeleteUR extends HttpServlet {
 			em.remove(old);
 
 		em.close();
-
 	}
 
 }

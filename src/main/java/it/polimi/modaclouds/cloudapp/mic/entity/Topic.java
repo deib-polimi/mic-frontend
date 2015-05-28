@@ -30,10 +30,10 @@ public class Topic {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-//	@Column(name="topicName")
+	// @Column(name="topicName")
 	private String topicName;
 
-//	@Embedded
+	// @Embedded
 	private List<String> topicQuestions;
 
 	public Topic() {
@@ -41,37 +41,27 @@ public class Topic {
 	}
 
 	public Topic(String topicName, List<String> topicQuestions) {
-
 		super();
 
 		this.topicName = topicName;
-
 		this.topicQuestions = topicQuestions;
 
 	}
 
 	public String getTopicName() {
-
 		return topicName;
-
 	}
 
 	public void setTopicName(String topicName) {
-
 		this.topicName = topicName;
-
 	}
 
 	public List<String> getTopicQuestions() {
-
 		return topicQuestions;
-
 	}
 
 	public void setTopicQuestions(List<String> topicQuestions) {
-
 		this.topicQuestions = topicQuestions;
-
 	}
 
 }

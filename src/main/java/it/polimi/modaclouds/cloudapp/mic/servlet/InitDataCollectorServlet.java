@@ -9,12 +9,9 @@ import java.util.Map;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class InitDataCollectorServlet implements ServletContextListener {
 
-	Logger logger = LoggerFactory.getLogger(InitDataCollectorServlet.class);
+//	private static final Logger logger = LoggerFactory.getLogger(InitDataCollectorServlet.class);
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {

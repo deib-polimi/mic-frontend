@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * Servlet implementation class LoginServlet
  */
-
 public class LogoutServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5909797442154638761L;
@@ -41,11 +40,8 @@ public class LogoutServlet extends HttpServlet {
 	 * 
 	 * @see HttpServlet#HttpServlet()
 	 */
-
 	public LogoutServlet() {
-
 		super();
-
 	}
 
 	/**
@@ -53,14 +49,10 @@ public class LogoutServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-
 	@Override
 	protected void doGet(HttpServletRequest request,
-
-	HttpServletResponse response) throws ServletException, IOException {
-
+			HttpServletResponse response) throws ServletException, IOException {
 		this.doPost(request, response);
-
 	}
 
 	/**
@@ -68,34 +60,25 @@ public class LogoutServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void doPost(HttpServletRequest request,
-
-	HttpServletResponse response) throws ServletException, IOException {
-
+			HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-
 		response.setCharacterEncoding("UTF-8");
-
-		RequestDispatcher disp;
 
 		String user = (String) request.getSession(true).getAttribute(
 				"actualUser");
 
-		if (user != null)
-
-		{
+		if (user != null) {
 
 			CloudMemcache cmc = MF.getFactory().getCloudMemcache();
 
 			if (cmc.contains(user)) {
-
 				for (String s : (Vector<String>) cmc.get(user))
 					cmc.delete(user + "$" + s);
 
 				cmc.delete(user);
-
 			}
 
 			cmc.close();
@@ -106,15 +89,12 @@ public class LogoutServlet extends HttpServlet {
 		}
 
 		else
-
 			request.setAttribute("message", "Bye Bye!!!");
-
-		disp = request.getRequestDispatcher("Home.jsp");
 
 		request.getSession(true).setAttribute("actualUser", null);
 
+		RequestDispatcher disp = request.getRequestDispatcher("Home.jsp");
 		disp.forward(request, response);
-
 	}
 
 }

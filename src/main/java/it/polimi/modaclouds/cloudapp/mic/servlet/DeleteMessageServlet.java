@@ -28,24 +28,23 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DeleteMessageServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LoggerFactory.getLogger(DeleteMessageServlet.class);
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-
-	throws ServletException, IOException {
-
+			throws ServletException, IOException {
 		doPost(req, resp);
-
 	}
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-
-	throws ServletException, IOException {
-
+			throws ServletException, IOException {
 		MF mf = MF.getFactory();
 
 		String msgId = req.getParameter("msgId");
@@ -53,37 +52,23 @@ public class DeleteMessageServlet extends HttpServlet {
 		Connection c = mf.getSQLService().getConnection();
 
 		PreparedStatement pstm = null;
-
 		try {
-
 			pstm = c.prepareStatement("DELETE FROM Message WHERE Id=?");
-
 			pstm.setString(1, msgId);
 
 			pstm.executeUpdate();
-
 		} catch (SQLException e) {
-
-			e.printStackTrace();
-
-		}
-
-		finally {
-
+			logger.error("Error while deleting a message.", e);
+		} finally {
 			try {
-
 				pstm.close();
-
 				c.close();
-
 			} catch (SQLException e) {
-
-				e.printStackTrace();
-
+				logger.error(
+						"Error while closing the connection to the database.",
+						e);
 			}
-
 		}
-
 	}
 
 }

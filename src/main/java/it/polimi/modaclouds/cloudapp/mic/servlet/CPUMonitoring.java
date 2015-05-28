@@ -20,60 +20,41 @@ import it.polimi.modaclouds.cpimlibrary.mffactory.MF;
 
 import java.sql.Connection;
 import java.sql.Statement;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CPUMonitoring {
 
 	private static Boolean monitoringMode = false;
+	private static final Logger logger = LoggerFactory.getLogger(CPUMonitoring.class);
 
-	public static void saveLogs(String servlet, int diff, int start, int end)
-
-	{
-
-		Logger l = Logger
-				.getLogger("it.polimi.modaclouds.cloudapp.mic.servlet");
-
+	public static void saveLogs(String servlet, int diff, int start, int end) {
 		Connection c = MF.getFactory().getSQLService().getConnection();
 
 		long time = System.currentTimeMillis();
 
 		String mykey = servlet + time;
-
 		String stm = "INSERT INTO cpulogs VALUES('" + mykey + "', '" + servlet
 				+ "', " + diff + ", " + start + ", " + end + ")";
 
 		try {
-
 			Statement statement = c.createStatement();
-
 			statement.executeUpdate(stm);
 
 			statement.close();
-
 			c.close();
-
 		} catch (Exception e) {
-
-			l.info("NON RIUSCITO SALVATAGGIO CPU LOGS:" + e.getMessage());
-
+			logger.error("NON RIUSCITO SALVATAGGIO CPU LOGS", e);
 		}
-
 	}
 
-	public static Boolean isActive()
-
-	{
-
+	public static Boolean isActive() {
 		return monitoringMode;
-
 	}
 
-	public static void setMonitoringMode()
-
-	{
-
+	public static void setMonitoringMode() {
 		monitoringMode = true;
-
 	}
 
 }

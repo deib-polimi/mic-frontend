@@ -35,9 +35,7 @@ public class DownloadFileServlet extends HttpServlet {
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-
-	throws ServletException, IOException {
-
+			throws ServletException, IOException {
 		MF mf = MF.getFactory();
 
 		String fileName = req.getParameter("fileName");
@@ -48,39 +46,29 @@ public class DownloadFileServlet extends HttpServlet {
 		InputStream streamDown = cdb.getFileStream();
 
 		resp.setContentLength((int) cdb.getSize());
-
 		resp.setContentType(cdb.getContentType());
-
 		resp.setHeader("Content-Disposition", "attachment; filename=\""
-
-		+ fileName + "\"");
+				+ fileName + "\"");
 
 		ServletOutputStream out = resp.getOutputStream();
-
 		BufferedOutputStream bufferOut = new BufferedOutputStream(out);
 
 		int b = 0;
-
 		byte[] bufferData = new byte[8192];
 
 		while ((b = streamDown.read(bufferData)) != -1)
 			bufferOut.write(bufferData, 0, b);
 
 		bufferOut.flush();
-
 		bufferOut.close();
-
 		out.close();
-
 		streamDown.close();
-
 	}
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-
-	throws ServletException, IOException {
-
+			throws ServletException, IOException {
+		doGet(req, resp);
 	}
 
 }

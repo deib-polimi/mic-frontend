@@ -38,22 +38,21 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * Servlet implementation class LoginServlet
  */
-
 public class SaveAnswerServlet extends HttpServlet {
 
 	MF mf = MF.getFactory();
 
 	private static final long serialVersionUID = 5909797442154638761L;
 
+	// private static final Logger logger =
+	// LoggerFactory.getLogger(SaveAnswerServlet.class);
+
 	/**
 	 * 
 	 * @see HttpServlet#HttpServlet()
 	 */
-
 	public SaveAnswerServlet() {
-
 		super();
-
 	}
 
 	/**
@@ -61,14 +60,10 @@ public class SaveAnswerServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-
 	@Override
 	protected void doGet(HttpServletRequest request,
-
-	HttpServletResponse response) throws ServletException, IOException {
-
-		this.doPost(request, response);
-
+			HttpServletResponse response) throws ServletException, IOException {
+		doPost(request, response);
 	}
 
 	/**
@@ -79,30 +74,19 @@ public class SaveAnswerServlet extends HttpServlet {
 	@Override
 	@Monitor(type = "saveAnswers")
 	protected void doPost(HttpServletRequest request,
-
-	HttpServletResponse response) throws ServletException, IOException {
-
+			HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-
 		response.setCharacterEncoding("UTF-8");
 
 		String usermail = (String) request.getSession(true).getAttribute(
 				"actualUser");
 
 		if (usermail == null) {
+			request.setAttribute("message", "Session expired!!!");
 
-			RequestDispatcher disp;
-
-			request.setAttribute(
-
-			"message", "Session expired!!!");
-
-			disp = request.getRequestDispatcher("Home.jsp");
-
+			RequestDispatcher disp = request.getRequestDispatcher("Home.jsp");
 			disp.forward(request, response);
-
 			return;
-
 		}
 
 		@SuppressWarnings("unchecked")
@@ -111,36 +95,28 @@ public class SaveAnswerServlet extends HttpServlet {
 
 		int pointer = (Integer) request.getSession(true)
 				.getAttribute("pointer");
-
 		String actualTopic = topicList.get(pointer);
-
-		ArrayList<Integer> ratings = new ArrayList<Integer>();
 
 		CloudEntityManager em = mf.getEntityManagerFactory()
 				.createCloudEntityManager();
 
+		ArrayList<Integer> ratings = new ArrayList<Integer>();
 		int count = (Integer) request.getSession(true).getAttribute("count");
-
 		for (int i = 1; i <= count; i++)
 			ratings.add(Integer.parseInt(request.getParameter(actualTopic + i)));
 
 		// //////////////////////
-
 		// Map<Integer, Integer> ratings_map = new HashMap<Integer, Integer>();
-
 		// for(int i = 0; i < ratings.size(); i++)
-
 		// ratings_map.put(i, ratings.get(i));
 
 		ArrayList<String> ratings_list = new ArrayList<String>();
-
 		for (int i = 0; i < ratings.size(); i++)
 			ratings_list.add(i + "=" + ratings.get(i));
 
 		// //////////////////////
 
 		UserRatings ur = new UserRatings(usermail, actualTopic, ratings_list);
-
 		em.persist(ur);
 
 		boolean edit = new Boolean((String) request.getSession(true)
@@ -151,107 +127,59 @@ public class SaveAnswerServlet extends HttpServlet {
 		pointer++;
 
 		if (pointer < topicList.size()) {
-
 			request.getSession(true).setAttribute("pointer", pointer);
-
 			disp = request.getRequestDispatcher("DisplayQuestion.jsp");
-
 			disp.forward(request, response);
-
 		} else if (edit) {
-
 			request.getSession(true).setAttribute("edit", "false");
-
 			sendRequestToTheQueue(usermail, request);
-
 			disp = request.getRequestDispatcher("Showcase.jsp");
-
 			disp.forward(request, response);
-
 		} else {
-
 			sendRequestToTheQueue(usermail, request);
-
 			request.getSession(true).removeAttribute("actualUser");
-
 			request.getSession(true).removeAttribute("count");
-
 			request.getSession(true).removeAttribute("pointer");
-
 			request.getSession(true).removeAttribute("topicList");
-
 			disp = request.getRequestDispatcher("Home.jsp");
-
 			disp.forward(request, response);
-
 		}
-
 	}
 
 	private void sendRequestToTheQueue(String email, HttpServletRequest request) {
-
-		/*
-		 * 
-		 * CloudTaskQueue q = mf.getTaskQueueFactory().getQueue("queuetask");
-		 * 
-		 * 
-		 * 
-		 * CloudTask t = new CloudTask();
-		 * 
-		 * t.setMethod(CloudTask.POST);
-		 * 
-		 * t.setParameters("user", email);
-		 * 
-		 * t.setParameters("edit", (String)
-		 * request.getSession(true).getAttribute("edit"));
-		 * 
-		 * 
-		 * 
-		 * t.setServletUri("/computeSimilarity");
-		 * 
-		 * Date date = new Date();
-		 * 
-		 * String taskname=email+date.toString().replace(' ','_').replace(':',
-		 * '-');
-		 * 
-		 * t.setTaskName(taskname);
-		 * 
-		 * try {
-		 * 
-		 * q.add(t);
-		 * 
-		 * request.setAttribute(
-		 * 
-		 * "message",
-		 * 
-		 * "Your answer has been saved. The system will process them and you will receive by email the best contact for you"
-		 * );
-		 * 
-		 * } catch (CloudTaskQueueException e) {
-		 * 
-		 * request.setAttribute(
-		 * 
-		 * "message",
-		 * 
-		 * e.getMessage());
-		 * 
-		 * }
-		 */
+//		CloudTaskQueue q = mf.getTaskQueueFactory().getQueue("queuetask");
+//		CloudTask t = new CloudTask();
+//		t.setMethod(CloudTask.POST);
+//		t.setParameters("user", email);
+//		t.setParameters("edit",
+//				(String) request.getSession(true).getAttribute("edit"));
+//		t.setServletUri("/computeSimilarity");
+//
+//		Date date = new Date();
+//
+//		String taskname = email
+//				+ date.toString().replace(' ', '_').replace(':', '-');
+//		t.setTaskName(taskname);
+//
+//		try {
+//			q.add(t);
+//			request.setAttribute(
+//					"message",
+//					"Your answer has been saved. The system will process them and you will receive by email the best contact for you");
+//		} catch (CloudTaskQueueException e) {
+//			request.setAttribute("message", e.getMessage());
+//		}
 
 		CloudTaskQueue q = mf.getTaskQueueFactory().getQueue("queuetask");
-
 		CloudTask t = new CloudTask();
-
 		t.setMethod(CloudTask.POST);
-
 		t.setParameters("user", email);
-
 		t.setParameters("edit",
 				(String) request.getSession(true).getAttribute("edit"));
 
+		@SuppressWarnings("unused")
 		String serverPath = request.getScheme() + "://"
-
-		+ request.getServerName() + ":" + request.getServerPort()
+				+ request.getServerName() + ":" + request.getServerPort()
 				+ request.getContextPath();
 
 		t.setServletUri("/computeSimilarity");
@@ -260,184 +188,90 @@ public class SaveAnswerServlet extends HttpServlet {
 
 		String taskname = email
 				+ date.toString().replace(' ', '_').replace(':', '-');
-
 		t.setTaskName(taskname);
 
 		try {
-
 			q.add(t);
-
 			request.setAttribute(
-
 					"message",
-
 					"Your answer has been saved. The system will process them and you will receive by email the best contact for you");
-
 		} catch (CloudTaskQueueException e) {
-
-			request.setAttribute(
-
-			"message",
-
-			e.getMessage());
-
+			request.setAttribute("message", e.getMessage());
 		}
-
 	}
 
-	// If you want to use Message Queues
-
+	// // If you want to use Message Queues
 	// private void sendRequestToTheQueueMSG(String email, HttpServletRequest
 	// request) {
-
 	// CloudMessageQueue q = mf.getMessageQueueFactory().getQueue("queue");
-
 	// msgConsumer(q);
-
-	// String msg=email+"&&"+request.getSession(true).getAttribute("edit");
-
+	// String msg = email + "&&"
+	// + request.getSession(true).getAttribute("edit");
 	// try {
-
 	// q.add(msg);
-
 	// } catch (CloudMessageQueueException e) {
-
 	// e.printStackTrace();
-
 	// }
-
 	//
-
 	// System.out.println("Task incodato.....");
-
 	// }
-
 	//
-
-	// public void msgConsumer(CloudMessageQueue q)
-
-	// {
-
+	// public void msgConsumer(CloudMessageQueue q) {
 	// final CloudMessageQueue queue = q;
-
-	// Runnable r=new Runnable(){
-
-	// public void run()
-
-	// {
-
-	// CloudMessage msg=null;
-
-	// while(true)
-
-	// {
-
-	// if(queue!=null)
-
-	// {
-
-	// msg=queue.getMessage();
-
+	// Runnable r = new Runnable(){
+	// public void run() {
+	// CloudMessage msg = null;
+	// while(true) {
+	// if (queue != null) {
+	// msg = queue.getMessage();
 	//
-
-	// if(msg!=null)
-
-	// {
-
+	// if(msg != null) {
 	// String[] info=msg.getMsg().split("&&");
-
 	// String email=info[0];
-
 	// String edit=info[1];
-
 	//
-
 	// new ComputeSimilarity(email,edit);
-
 	// try {
-
 	// queue.deleteMessage(msg);
-
 	// } catch (CloudMessageQueueException e) {
-
 	// e.printStackTrace();
-
 	// }
-
 	// }
-
 	//
-
 	// }
-
 	// else
-
 	// System.out.println("Errore setQueue...null");
-
 	// try {
-
 	// System.out.println("Relax....");
-
 	// Thread.sleep(10000); //aggiornare con eventuale valore in
 	// configurations.xml
-
 	// } catch (InterruptedException e) {
-
 	// e.printStackTrace();
-
 	// }
-
 	// }
-
 	//
-
 	//
-
 	// }
-
 	//
-
-	//
-
-	//
-
-	//
-
 	// };
-
 	//
-
-	// Thread t=null;
-
+	// Thread t = null;
 	// try {
-
-	// t = CloudThread.getThread(r,CloudMetadata.getCloudMetadata());
-
+	// t = CloudThread.getThread(r, CloudMetadata.getCloudMetadata());
 	// } catch (ParserConfigurationFileException e) {
-
 	// e.printStackTrace();
-
 	// }
-
-	// if(!t.isAlive())
-
+	// if (!t.isAlive())
 	// t.start();
-
 	// }
-
-	// public void sendmail(String email)
-
-	// {
-
-	// String messageBody
-	// ="Your answer has been saved.\n The system will process them and you will receive by email the best contacts for you"+"\n\n\n Meeting in the Cloud"
-	// ;
-
-	// CloudMail msgToSend=new
-	// CloudMail(email,"Welcome to mic.com!",messageBody);
-
+	//
+	// public void sendmail(String email) {
+	// String messageBody =
+	// "Your answer has been saved.\n The system will process them and you will receive by email the best contacts for you"
+	// + "\n\n\n Meeting in the Cloud";
+	// CloudMail msgToSend = new CloudMail(email, "Welcome to mic.com!",
+	// messageBody);
 	// mf.getMailManager().sendMail(msgToSend);
-
 	// }
 
 }
