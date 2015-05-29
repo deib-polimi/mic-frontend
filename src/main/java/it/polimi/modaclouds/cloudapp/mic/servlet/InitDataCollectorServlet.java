@@ -21,8 +21,8 @@ public class InitDataCollectorServlet implements ServletContextListener {
 	private static String MONITORING_PLATFORM_IP = "";
 	private static int MONITORING_PLATFORM_PORT = 8170;
 	
-	public static final String MONITORING_PLATFORM_IP_PROPERTY = "MODACLOUDS_MONITORING_DDA_ENDPOINT_IP";
-	public static final String MONITORING_PLATFORM_PORT_PROPERTY = "MODACLOUDS_MONITORING_DDA_ENDPOINT_PORT";
+	public static final String MONITORING_PLATFORM_IP_PROPERTY = "MODACLOUDS_TOWER4CLOUDS_MANAGER_IP";
+	public static final String MONITORING_PLATFORM_PORT_PROPERTY = "MODACLOUDS_TOWER4CLOUDS_MANAGER_PORT";
 	
 	public static void loadFromEnrivonmentVariables() {
 		String mpIp = System.getenv(MONITORING_PLATFORM_IP_PROPERTY);
