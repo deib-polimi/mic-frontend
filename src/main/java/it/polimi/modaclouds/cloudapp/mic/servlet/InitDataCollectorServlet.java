@@ -59,7 +59,7 @@ public class InitDataCollectorServlet implements ServletContextListener {
 		
 		applicationProperties.put(Property.ID, "mic-frontend-mon");
 		applicationProperties.put(Property.TYPE, "Mic");
-		applicationProperties.put(Property.CLOUD_PROVIDER_ID, "amazon");
+		applicationProperties.put(Property.CLOUD_PROVIDER_ID, "AWS"); // TODO: it was "amazon", which one is the correct one?
 		applicationProperties.put(Property.CLOUD_PROVIDER_TYPE, "IaaS");
 		applicationProperties.put(Property.VM_ID, "MIC");
 		applicationProperties.put(Property.VM_TYPE, "Frontend");
